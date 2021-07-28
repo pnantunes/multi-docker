@@ -1,0 +1,21 @@
+sudo: required
+services:
+    - docker
+before_install:
+    - docker build -t pnantunes/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true pnantunes/react-test npm test
+    
+after_success:
+    - docker build -t pnantunes/multi-client ./client
+    - docker build -t pnantunes/multi-nginx ./nginx
+    - docker build -t pnantunes/multi-server ./server
+    - docker build -t pnantunes/multi-worket ./worker
+    # Log in to the docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin # Retrieve docker password from the env. variable and emit that over the standard in channel as input for the next commant (command on the other side of the pipe)
+    # Take those images and push them to docker hub
+    - docker push pnantunes/multi-client
+    - docker push pnantunes/multi-nginx
+    - docker push pnantunes/multi-server
+    - docker push pnantunes/multi-worker
