@@ -33,7 +33,7 @@
 					"containerPort":80
 				}
 			],
-			"lnks": ["client", "server"]
+			"lnks": ["client", "server"],
 			"memory": 128
 		}
 	]
